@@ -2,74 +2,93 @@ import React, { useState } from "react";
 import "./App.css";
 import Person from "./Person/Person";
 import { render } from "react-dom";
+//import Radium, { StyleRoot } from "radium";
+import styled from "styled-components";
 
-const App = props => {
+const App = (props) => {
   const [personState, setPersonState] = useState({
     persons: [
-      { name: "anil", age: 24 },
-      { name: "gal", age: 24 },
-      { name: "noa", age: 24 }
+      // { name: "anil", age: 24 },
+      // { name: "gal", age: 24 },
+      // { name: "noa", age: 24 },
     ],
-    otherState: "other value"
+
+    otherState: "other value",
   });
 
-  const switchNameHandler = name => {
+  const style = {
+    backgroungColor: "red",
+    font: "inherit",
+    border: "1px solid green",
+    padding: "8px",
+    cursor: "pointer",
+    ":hover": {
+      backgroungColor: "salmon",
+      border: "1px solid salmon",
+
+      color: "red",
+    },
+  };
+
+  const switchNameHandler = (name) => {
+    // style.border = "1px solid red";
     setPersonState({
       persons: [
         { name: "anil", age: 25 },
         { name: name, age: 25 },
-        { name: "noa", age: 25 }
+        { name: "noa", age: 25 },
       ],
-      otherState: personState.otherState
+      showPersons: true,
+      otherState: personState.otherState,
     });
   };
 
-  const nameChangedHandler = event => {
-    setPersonState({
-      persons: [
-        { name: "anil", age: 25 },
-        { name: event.target.value, age: 24 },
-        { name: "noa", age: 25 }
-      ],
-      otherState: personState.otherState
-    });
+  const nameChangedHandler = (event) => {
+    console.log(personState.showPersons);
+
+    if (personState.showPersons) {
+      setPersonState({
+        persons: [
+          { name: "anil", age: 25 },
+          { name: event.target.value, age: 24 },
+          { name: "noa", age: 25 },
+        ],
+        showPersons: !personState.showPersons,
+        otherState: personState.otherState,
+      });
+    } else {
+      setPersonState({
+        persons: [],
+        showPersons: !personState.showPersons,
+        otherState: personState.otherState,
+      });
+    }
   };
 
-  const style = {
-    backGroungColor: "white",
-    font: "inherit",
-    border: "1px solid blue",
-    padding: "8px",
-    cursor: "pointer"
-  };
+  const classes = [];
+  if (personState.persons.length <= 2) {
+    classes.push("red");
+  }
+  if (personState.persons.length <= 1) {
+    classes.push("bold");
+  }
 
   return (
+    //  <StyleRoot>
     <div className="App">
       <h1>Hi I'm react app</h1>
-      <p>This is working</p>
+      <p className={classes.join(" ")}>This is working</p>
       <button
         style={style}
         onClick={switchNameHandler.bind(personState, "Gal")}
       >
         switch
       </button>
-      <Person
-        name={personState.persons[0].name}
-        age={personState.persons[0].age}
-      >
-        My hobbies are:
-      </Person>
-      <Person
-        name={personState.persons[1].name}
-        age={personState.persons[1].age}
-        click={() => switchNameHandler("Gal!")}
-        changed={nameChangedHandler}
-      />
-      <Person
-        name={personState.persons[2].name}
-        age={personState.persons[2].age}
-      />
+      {personState.persons.map((p) => {
+        return <Person name={p.name} age={p.age}></Person>;
+      })}
     </div>
+    //  </StyleRoot>
   );
 };
 
